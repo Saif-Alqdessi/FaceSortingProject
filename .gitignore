@@ -1,0 +1,20 @@
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual env
+venv/
+
+# VS Code settings
+.vscode/
+
+# DeepFace cache
+.deepface/
+
+# Data that تتغيّر كثير
+Data/new_photos/
+Data/output/
+
+# نظام التشغيل
+Thumbs.db
+Desktop.ini
