@@ -1,5 +1,7 @@
 import os
 import pickle
+
+import cv2
 from deepface import DeepFace
 
 # مسار مجلد الصور
@@ -22,13 +24,25 @@ def enroll_known_people():
                 # استخراج embedding للوجه من الصورة
                 embedding = DeepFace.represent(
                     img_path=img_path,
-                    model_name="Facenet",
+                    model_name="ArcFace",
                     detector_backend="retinaface",
                     enforce_detection=True
                 )[0]["embedding"]
 
-                embeddings_db[person_name] = embedding
-                print(f"[OK] Saved embedding for {person_name}")
+                img = cv2.imread(img_path)
+                if img is None:
+                    raise ValueError("Unable to read image for augmentation")
+                flipped_img = cv2.flip(img, 1)
+
+                flipped_embedding = DeepFace.represent(
+                    img_path=flipped_img,
+                    model_name="ArcFace",
+                    detector_backend="retinaface",
+                    enforce_detection=True
+                )[0]["embedding"]
+
+                embeddings_db[person_name] = [embedding, flipped_embedding]
+                print(f"[OK] Saved embeddings (original + flipped) for {person_name}")
 
             except Exception as e:
                 print(f"[ERROR] Failed on {filename}: {e}")
